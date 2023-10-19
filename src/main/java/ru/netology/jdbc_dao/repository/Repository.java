@@ -16,8 +16,7 @@ import java.util.stream.Collectors;
 public class Repository {
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
-    private final String scriptFile = "select_product_name.sql";
-    private String script = read(scriptFile);
+    final private String script = read("select_product_name.sql");
 
     public Repository(NamedParameterJdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -26,10 +25,7 @@ public class Repository {
     public List<String> getProductName(String name) {
         Map<String, Object> queryParams = new HashMap<>();
         queryParams.put("name", name);
-        return jdbcTemplate.query(script, queryParams, ((rs, rowNum) ->
-        {
-            return rs.getString("product_name");
-        }));
+        return jdbcTemplate.queryForList(script, queryParams, String.class);
     }
 
     private static String read(String scriptFileName) {
